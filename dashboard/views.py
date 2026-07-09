@@ -8,7 +8,7 @@ CITY_INFO = {
     },
     "san_diego": {
         "display_name": "San Diego, CA",
-        "cbsa_name": "San Diego-Chula Vista-Carlsbad, CA",
+        "cbsa_name": "San Diego-Carlsbad, CA",
     },
     "new_york": {
         "display_name": "New York City, NY",

@@ -50,15 +50,24 @@
     ).addTo(map);
     L.marker([34.0522, -118.2437])
     .addTo(map)
-    .bindPopup("Los Angeles, CA");
+    .bindPopup("Los Angeles, CA")
+    .on("click", function () {
+        window.location.href = "/city/los_angeles/";
+    });
 
 L.marker([32.7157, -117.1611])
     .addTo(map)
-    .bindPopup("San Diego, CA");
+    .bindPopup("San Diego, CA")
+    .on("click", function () {
+        window.location.href = "/city/san_diego/";
+    });
 
 L.marker([40.7128, -74.0060])
     .addTo(map)
-    .bindPopup("New York City, NY");
+    .bindPopup("New York City, NY")
+    .on("click", function () {
+        window.location.href = "/city/new_york/";
+    });
     </script>
 </body>
 </html>
