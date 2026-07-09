@@ -2,12 +2,42 @@
 <html>
     <head>
         <title> Ridgeline Air Pollution Data Dashboard </title>
-    <head>
+        <link href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel = "stylesheet">
+        <link rel="stylesheet"
+        href = "https://unpkg.com/leaflet/dist/leaflet.css" />
+    </head>
 <body>
-    <h1> Ridgeline Air Pollution Data Dashboard </h1>
-    <p> This dashboard will visualize and analyze the EPA's daily PM2.5
+    <div class = "container mt-5">
+    <h1 class = "text-center"> Ridgeline Air Pollution Data Dashboard </h1>
+    <p class = "text-center"> This dashboard will visualize and analyze the EPA's daily PM2.5
         values from multiple US citites: Los Angeles, CA, San Diego, CA, and
         New York City, NY. </p>
+        <p class = "text-center"> <i>Select a city on the interactive map to view its daily
+            PM2.5 data.</i> </p>
+    <hr>
+        <div id="map" style ="height:500px;"></div>
+    </div>
+    <script src = "https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+    var map = L.map('map').setView([39.5,-98.5],4);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', 
+    {
+        attribution: '&copy; OpenStreetMap contributors'
+    }
+    ).addTo(map);
+    L.marker([34.0522, -118.2437])
+    .addTo(map)
+    .bindPopup("Los Angeles, CA");
+
+L.marker([32.7157, -117.1611])
+    .addTo(map)
+    .bindPopup("San Diego, CA");
+
+L.marker([40.7128, -74.0060])
+    .addTo(map)
+    .bindPopup("New York City, NY");
+    </script>
 </body>
 </html>
 
