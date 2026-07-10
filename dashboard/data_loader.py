@@ -79,7 +79,6 @@ def get_monthly_averages(cbsa_name):
 
         year = int(year_text)
 
-        # The challenge begins with 2018.
         if year < 2018:
             continue
 
@@ -88,21 +87,16 @@ def get_monthly_averages(cbsa_name):
         if city_df.empty:
             continue
 
-        # Add a numeric month column.
         city_df["Month"] = city_df["Date Local"].dt.month
 
-        # Keep only March, April, and May.
         spring_df = city_df[city_df["Month"].isin([3, 4, 5])]
 
-        # First calculate one mean per date. This prevents days with more
-        # monitoring sites from receiving more weight than other days.
         daily_df = (
             spring_df
             .groupby(["Date Local", "Month"], as_index=False)["Arithmetic Mean"]
             .mean()
         )
 
-        # Then calculate the average of the daily values for each month.
         month_averages = (
             daily_df
             .groupby("Month")["Arithmetic Mean"]
