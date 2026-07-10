@@ -65,5 +65,45 @@
     });
 </script>
 
+<div class="card mt-4">
+    <div class="card-body">
+        <h2 class="card-title text-center mb-4">
+            Spring Monthly Average PM2.5
+        </h2>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Month</th>
+
+                        {% for year in years %}
+                            <th>{{ year }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in monthly_rows %}
+                        <tr>
+                            <th>{{ row.month }}</th>
+
+                            {% for value in row.values %}
+                                <td>
+                                    {% if value is not None %}
+                                        {{ value }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

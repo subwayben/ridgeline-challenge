@@ -1,15 +1,39 @@
 import pandas as pd
 from pathlib import Path
+from zipfile import ZipFile
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 def load_data(year):
-    FILE_PATH = DATA_DIR / f"daily_88101_{year}.zip"
+    file_path = DATA_DIR / f"daily_88101_{year}.zip"
 
-    df = pd.read_csv(
-        FILE_PATH,
-        compression="zip",
-        low_memory=False
-    )
+    if not file_path.exists():
+        raise FileNotFoundError(
+            f"EPA data file was not found: {file_path}"
+        )
+
+    with ZipFile(file_path) as zip_file:
+        csv_files = [
+            name
+            for name in zip_file.namelist()
+            if name.lower().endswith(".csv")
+        ]
+
+        if not csv_files:
+            raise ValueError(
+                f"No CSV file was found inside {file_path.name}"
+            )
+
+        if len(csv_files) > 1:
+            raise ValueError(
+                f"Multiple CSV files were found inside {file_path.name}: "
+                f"{csv_files}"
+            )
+
+        with zip_file.open(csv_files[0]) as csv_file:
+            df = pd.read_csv(
+                csv_file,
+                low_memory=False
+            )
 
     return df
 
@@ -41,8 +65,74 @@ def get_chart_data(cbsa_name, year):
         "values": values,
     }
 
-from dashboard.data_loader import load_data
+def get_monthly_averages(cbsa_name):
+    month_names = {3: "March", 4: "April", 5: "May"}
+    data_files = sorted(DATA_DIR.glob("daily_88101_*.zip"))
+    years = []
+    monthly_results = {3: {}, 4: {}, 5: {}}
 
-df = load_data()
+    for file_path in data_files:
+        year_text = file_path.stem.split("_")[-1]
 
-df.head()
+        if not year_text.isdigit():
+            continue
+
+        year = int(year_text)
+
+        # The challenge begins with 2018.
+        if year < 2018:
+            continue
+
+        city_df = get_city_data(cbsa_name, year)
+
+        if city_df.empty:
+            continue
+
+        # Add a numeric month column.
+        city_df["Month"] = city_df["Date Local"].dt.month
+
+        # Keep only March, April, and May.
+        spring_df = city_df[city_df["Month"].isin([3, 4, 5])]
+
+        # First calculate one mean per date. This prevents days with more
+        # monitoring sites from receiving more weight than other days.
+        daily_df = (
+            spring_df
+            .groupby(["Date Local", "Month"], as_index=False)["Arithmetic Mean"]
+            .mean()
+        )
+
+        # Then calculate the average of the daily values for each month.
+        month_averages = (
+            daily_df
+            .groupby("Month")["Arithmetic Mean"]
+            .mean()
+        )
+
+        years.append(year)
+
+        for month_number in [3, 4, 5]:
+            if month_number in month_averages.index:
+                monthly_results[month_number][year] = float(
+                round(month_averages.loc[month_number], 2)
+)
+            else:
+                monthly_results[month_number][year] = None
+
+    years = sorted(set(years))
+
+    rows = []
+
+    for month_number in [3, 4, 5]:
+        rows.append({
+            "month": month_names[month_number],
+            "values": [
+                monthly_results[month_number].get(year)
+                for year in years
+            ],
+        })
+
+    return {
+        "years": years,
+        "rows": rows,
+    }

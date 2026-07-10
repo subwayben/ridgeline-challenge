@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .data_loader import get_chart_data
+from .data_loader import get_chart_data, get_monthly_averages
 
 CITY_INFO = {
     "los_angeles": {
@@ -21,12 +22,23 @@ def home(request):
 
 def city(request, city_name):
     city_info = CITY_INFO[city_name]
-    chart_data = get_chart_data(city_info["cbsa_name"])
+
+    chart_data = get_chart_data(
+        city_info["cbsa_name"],
+        2024
+    )
+
+    monthly_data = get_monthly_averages(
+        city_info["cbsa_name"]
+    )
 
     context = {
         "city_name": city_info["display_name"],
         "dates": chart_data["dates"],
         "values": chart_data["values"],
+        "years": monthly_data["years"],
+        "monthly_rows": monthly_data["rows"],
     }
 
     return render(request, "dashboard/city.html", context)
+

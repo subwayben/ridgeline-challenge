@@ -13,7 +13,7 @@
     <p class = "text-center"> This dashboard will visualize and analyze the EPA's daily PM2.5
         values from multiple US citites: Los Angeles, CA, San Diego, CA, and
         New York City, NY. </p>
-        <p class = "text-center"> <i>Select a city on the interactive map to view its daily
+        <p class = "text-center"> <i>Click on a city on the interactive map to view its daily
             PM2.5 data.</i> </p>
     <hr>
         <div id="map" style ="height:500px;"></div>
@@ -22,23 +22,6 @@
 
 <h2>{{ city }}</h2>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>PM2.5 (Arithmetic Mean)</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        {% for row in rows %}
-        <tr>
-            <td>{{ row.date }}</td>
-            <td>{{ row.pm25 }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
 
     <script src = "https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
