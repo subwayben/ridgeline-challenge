@@ -2,13 +2,19 @@ import pandas as pd
 from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
-FILE_PATH = DATA_DIR / "daily_88101_2024.zip"
-def load_data():
-    df = pd.read_csv(FILE_PATH, compression="zip", low_memory=False)
+def load_data(year):
+    FILE_PATH = DATA_DIR / f"daily_88101_{year}.zip"
+
+    df = pd.read_csv(
+        FILE_PATH,
+        compression="zip",
+        low_memory=False
+    )
+
     return df
 
-def get_city_data(cbsa_name):
-    df = load_data()
+def get_city_data(cbsa_name, year):
+    df = load_data(year)
 
     city_df = df[df["CBSA Name"] == cbsa_name].copy()
 
@@ -17,8 +23,8 @@ def get_city_data(cbsa_name):
 
     return city_df
 
-def get_chart_data(cbsa_name):
-    city_df = get_city_data(cbsa_name)
+def get_chart_data(cbsa_name, year):
+    city_df = get_city_data(cbsa_name, year)
 
     daily_df = (
         city_df
